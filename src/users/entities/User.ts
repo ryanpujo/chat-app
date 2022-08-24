@@ -1,16 +1,18 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Role } from '../types/user';
-
-@Entity()
+export enum Role {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+@Entity({ database: 'myDatabase' })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'varchar', nullable: false })
-  Fname: string;
+  fname: string;
 
   @Column({ type: 'varchar', nullable: false })
-  Lname: string;
+  lname: string;
 
   @Column({ type: 'varchar', unique: true, nullable: false, length: 10 })
   username: string;
@@ -26,13 +28,13 @@ export class User {
     enum: Role,
     nullable: false,
     array: true,
-    default: [Role.USER],
+    default: [Role.ADMIN],
   })
   roles: Role[];
 
   @Column({ type: 'bigint', nullable: false, default: Date.now })
-  createdAt: number;
+  createdat: number;
 
   @Column({ type: 'bigint', nullable: false, default: Date.now })
-  modifiedAt: number;
+  modifiedat: number;
 }

@@ -1,5 +1,6 @@
+import { Role } from '../users/entities/User';
+
 export interface UserInfo {
-  id: number;
   Fname: string;
   Lname: string;
   username: string;
@@ -8,9 +9,4 @@ export interface UserInfo {
   roles: Role[];
   createdAt: number;
   modifiedAt: number;
-}
-
-export enum Role {
-  ADMIN,
-  USER,
 }
