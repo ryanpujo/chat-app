@@ -1,11 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { hash } from 'bcrypt';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export enum Role {
   ADMIN = 'admin',
   USER = 'user',
 }
-@Entity({ database: 'myDatabase' })
+@Entity({ name: 'users' })
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column({ type: 'varchar', nullable: false })
@@ -26,15 +27,27 @@ export class User {
   @Column({
     type: 'enum',
     enum: Role,
-    nullable: false,
     array: true,
-    default: [Role.ADMIN],
+    default: [Role.USER],
   })
   roles: Role[];
 
-  @Column({ type: 'bigint', nullable: false, default: Date.now })
+  @Column({ type: 'bigint', default: Date.now() })
   createdat: number;
 
-  @Column({ type: 'bigint', nullable: false, default: Date.now })
+  @Column({ type: 'bigint', default: Date.now() })
   modifiedat: number;
+
+  @BeforeInsert()
+  default() {
+    this.roles = this.roles || [Role.USER];
+    this.createdat = Date.now();
+    this.modifiedat = Date.now();
+  }
+
+  @BeforeInsert()
+  async encryptPassword() {
+    const encrypted = await hash(this.password, 10);
+    this.password = encrypted;
+  }
 }

@@ -10,3 +10,5 @@ export interface UserInfo {
   createdAt: number;
   modifiedAt: number;
 }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface EntityMarker {}

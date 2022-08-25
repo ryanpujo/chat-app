@@ -1,12 +1,13 @@
 import { Repository } from 'typeorm';
 import { BadRequest, NotFound } from '../../error/error.type';
+import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { User } from '../entities/User';
 
 export class UserService {
   constructor(private readonly userRepo: Repository<User>) {}
 
-  async saveUser(user: User): Promise<User> {
+  async saveUser(user: CreateUserDto): Promise<User> {
     const existingEmail = this.userRepo.findOne({
       where: { email: user.email },
     });
@@ -16,7 +17,14 @@ export class UserService {
     if ((await existingEmail) || (await existingUsername)) {
       throw new BadRequest('either email or username had been used');
     }
-    const newUser = await this.userRepo.save(user);
+    const entity = new User();
+    entity.fname = user.fname;
+    entity.lname = user.lname;
+    entity.username = user.username;
+    entity.email = user.email;
+    entity.password = user.password;
+    entity.roles = user.roles;
+    const newUser = await this.userRepo.save(entity);
     return newUser;
   }
 

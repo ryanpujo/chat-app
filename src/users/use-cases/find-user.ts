@@ -1,14 +1,13 @@
 import { Left, Right } from '../../utils/either';
-import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserService } from '../services/user.service';
 
-export class SaveUser {
+export class FindUser {
   constructor(private readonly userService: UserService) {}
 
-  async save(user: CreateUserDto) {
+  async FindByUsername(username: string) {
     try {
-      const newUser = await this.userService.saveUser(user);
-      return new Right(newUser);
+      const user = await this.userService.findByUsername(username);
+      return new Right(user);
     } catch (error) {
       return new Left(error);
     }

@@ -4,6 +4,7 @@ import { User } from '../entities/User';
 import { UserService } from './user.service';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { UpdateUserDto } from '../dtos/update-user.dto';
+import { CreateUserDto } from '../dtos/create-user.dto';
 
 describe('test userService', () => {
   let userService: UserService;
@@ -14,9 +15,19 @@ describe('test userService', () => {
   });
   it('should save and return a user', async () => {
     const user = makeUser();
-    when(repoMock.save(user)).thenResolve(user);
-    const result = await userService.saveUser(user);
-    verify(repoMock.save(user)).once();
+    const userDto: CreateUserDto = {
+      fname: user.fname,
+      lname: user.lname,
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      roles: user.roles,
+      createdat: user.createdat,
+      modifiedat: user.modifiedat,
+    };
+    when(repoMock.save(anything())).thenResolve(user);
+    const result = await userService.saveUser(userDto);
+    verify(repoMock.save(anything())).once();
     expect(result).toEqual(user);
   });
 
